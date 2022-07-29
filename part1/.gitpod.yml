@@ -1,0 +1,9 @@
+
+tasks:
+  - name: App
+    init: cd part1/
+    command: npm start
+ports:
+  - port: 3000
+    onOpen: open-preview
+    visibility: public
