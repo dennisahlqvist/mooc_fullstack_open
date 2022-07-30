@@ -10,7 +10,7 @@ const Button = (props) => {
 }
 const StatisticLine = (props) => {
   return (
-    <div>{props.text} {props.value}</div>
+    <tr><td>{props.text}</td><td>{props.value}</td></tr>
   )
 }
 
@@ -27,12 +27,16 @@ const Statistics = (props) => {
   return (
     <div>
       <h1>statistics</h1>
-      <StatisticLine text="good" value ={props.good} />
-      <StatisticLine text="neutral" value ={props.neutral} />
-      <StatisticLine text="bad" value ={props.bad} />
-      <StatisticLine text="all" value ={props.all} />
-      <StatisticLine text="average" value ={props.average} />
-      <StatisticLine text="positive" value ={props.positive} />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value ={props.good} />
+          <StatisticLine text="neutral" value ={props.neutral} />
+          <StatisticLine text="bad" value ={props.bad} />
+          <StatisticLine text="all" value ={props.all} />
+          <StatisticLine text="average" value ={props.average} />
+          <StatisticLine text="positive" value ={props.positive} />
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -45,7 +49,7 @@ const App = () => {
   const all = good+neutral+bad
   const average = ((good*1)+(neutral*0)+(bad*-1))/all
   const positive = (good/all*100).toString()+" %"
-  
+
   const increaseGood = () => setGood(good + 1)
   const increaseNeutral = () => setNeutral(neutral + 1)
   const increaseBad = () => setBad(bad + 1)
