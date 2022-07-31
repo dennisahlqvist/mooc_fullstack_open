@@ -2,6 +2,7 @@
 tasks:
   - name: App
     init: >
+      npm install -g json-server &&
       cd part2/phonebook/ &&
       npm install
 ports:
