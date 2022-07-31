@@ -2,7 +2,7 @@
 tasks:
   - name: App
     init: >
-      cd part2/courseinfo/ &&
+      cd part2/phonebook/ &&
       npm install
 ports:
   - port: 3000
