@@ -1,0 +1,7 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: 201 JSON {"message":"note created"}
+
+note over browser:
+the browser executes the event handler
+that renders notes to display
+end note
