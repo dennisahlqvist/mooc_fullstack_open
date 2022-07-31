@@ -1,0 +1,23 @@
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: 200 HTML
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: 200 main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: 200 main.js
+
+
+note over browser:
+the browser starts executing js-code
+that requests JSON data from server 
+end note
+
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: 200 data.json
+
+
+
+note over browser:
+the browser executes the event handler
+that renders notes to display
+end note
