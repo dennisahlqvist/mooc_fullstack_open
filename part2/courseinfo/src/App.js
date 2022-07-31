@@ -36,11 +36,10 @@ const Course = (props) => {
 
 
 const Total = (props) => {
-  let sum = props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises;
-  /*let sum = 0;
-  props.parts.forEach(part => {
+  let sum = 0;
+  props.course.parts.forEach(part => {
     sum += part.exercises;
-  });*/
+  });
   return (
     <p>Number of exercises {sum}</p>
   )
