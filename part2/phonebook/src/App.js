@@ -1,5 +1,28 @@
 import { useState } from 'react'
 
+
+const Persons = (props) => {
+  return (
+    <div>
+        {props.persons.map(person => 
+      <Person key={person.id} person={person}/>
+    )}
+  </div>
+  )
+}
+
+const Person = (props) => {
+  return (
+      <p key={props.person.id}> {props.person.name} {props.person.number}</p>
+  )
+}
+
+const Button = (props) => {
+  return (
+      <div><button type={props.type}>{props.text}</button></div>
+  )
+}
+
 const App = () => {
   
   const [persons, setPersons] = useState([
@@ -28,11 +51,14 @@ const App = () => {
     }else{
       const newPerson = {
         name: newName,
-        number: newNumber
+        number: newNumber,
+        id: persons.length + 1
       }
+      setFilteredPersons(persons.concat(newPerson))
       setPersons(persons.concat(newPerson))
       setNewName('')
       setNewNumber('')
+      setNewFilter('')
     }
   }
 
@@ -60,14 +86,10 @@ const App = () => {
       <form onSubmit={addName}>
         <div>name: <input value={newName} onChange={handleNameChange}/></div>
         <div>number: <input value={newNumber} onChange={handleNumberChange} /></div>
-        <div><button type="submit">add</button></div>
+          <Button type="submit" text="add" />
       </form>
       <h2>Numbers</h2>
-      <div>
-        {filteredPersons.map(person => 
-          <p key={person.name}> {person.name} {person.number}</p>
-        )}
-      </div>
+      <Persons persons={filteredPersons} />
     </div>
   )
 }
