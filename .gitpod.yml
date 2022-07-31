@@ -2,7 +2,7 @@
 tasks:
   - name: App
     init: >
-      cd part2/unicafe/ &&
+      cd part2/courseinfo/ &&
       npm install
 ports:
   - port: 3000
