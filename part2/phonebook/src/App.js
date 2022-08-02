@@ -25,6 +25,18 @@ const Button = (props) => {
   )
 }
 
+const SuccessNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='success'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   
   const [persons, setPersons] = useState([])
@@ -34,6 +46,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -70,6 +83,12 @@ const App = () => {
             .then(response => {
               setPersons(response.data)
               setFilteredPersons(response.data)
+              setSuccessMessage(
+                `Updated '${newName}'`
+              )
+              setTimeout(() => {
+                setSuccessMessage(null)
+              }, 5000)
         })
         setNewName('')
         setNewNumber('')
@@ -89,6 +108,12 @@ const App = () => {
       setNewName('')
       setNewNumber('')
       setNewFilter('')
+      setSuccessMessage(
+        `Added '${newName}'`
+      )
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
       })
     }
   }
@@ -131,6 +156,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <SuccessNotification message={successMessage} />
         <div>filter shown with: <input value={newFilter} onChange={handleFilterChange}/></div>
         <h2>add a new</h2>
       <form onSubmit={addName}>
