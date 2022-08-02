@@ -3,19 +3,19 @@ import axios from 'axios'
 import personService from './services/persons'
 
 
-const Persons = (props) => {
+const Persons = ({persons, deletePerson}) => {
   return (
     <div>
-        {props.persons.map(person => 
-      <Person key={person.id} person={person}/>
+        {persons.map(person => 
+      <Person key={person.id} person={person} deletePerson={deletePerson} />
     )}
   </div>
   )
 }
 
-const Person = (props) => {
+const Person = ({person, deletePerson}) => {
   return (
-      <p key={props.person.id}> {props.person.name} {props.person.number}</p>
+      <p key={person.id}> {person.name} {person.number}<button onClick={() => deletePerson(person.id)}>delete</button></p>
   )
 }
 
@@ -56,22 +56,37 @@ const App = () => {
     }else{
       const newPerson = {
         name: newName,
-        number: newNumber,
-        id: persons.length + 1
+        number: newNumber
       }
 
     personService
     .create(newPerson)
     .then(response => {
       console.log(response)
-      setFilteredPersons(persons.concat(newPerson))
-      setPersons(persons.concat(newPerson))
+        setFilteredPersons(persons.concat(response.data))
+        setPersons(persons.concat(response.data))
       setNewName('')
       setNewNumber('')
       setNewFilter('')
+      })
     }
-    )
+  }
 
+  const deletePerson = (personId) => {
+    if(window.confirm(`Confirm Delete?`)){
+
+
+      personService
+        .remove(personId)
+        .then(response => {
+          setNewFilter('')
+          personService
+            .getAll()
+            .then(response => {
+              setPersons(response.data)
+              setFilteredPersons(response.data)
+          })
+        })
     }
 
   }
@@ -103,7 +118,7 @@ const App = () => {
           <Button type="submit" text="add" />
       </form>
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deletePerson={deletePerson} />
     </div>
   )
 }
