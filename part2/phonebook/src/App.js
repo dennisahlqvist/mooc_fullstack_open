@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 
 const Persons = (props) => {
@@ -36,9 +37,8 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      //.get('https://3001-dennisahlqv-moocfullsta-d5m513kuso4.ws-eu54.gitpod.io/persons')
+    personService
+      .getAll()
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
@@ -60,8 +60,8 @@ const App = () => {
         id: persons.length + 1
       }
 
-      axios
-    .post('http://localhost:3001/persons', newPerson)
+    personService
+    .create(newPerson)
     .then(response => {
       console.log(response)
       setFilteredPersons(persons.concat(newPerson))
