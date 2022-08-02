@@ -47,17 +47,38 @@ const App = () => {
   }, [])
   console.log('render', persons.length, 'persons')
 
+  function personIdFromName(personId){
+    return persons.find((person) => newName === person.name).id;
+  }
 
   const addName = (event) => {
     event.preventDefault()
     let checkExists = persons.some((person) => newName === person.name);
-    if(checkExists){
-      window.alert(`${newName} is already added to phonebook`)
-    }else{
       const newPerson = {
         name: newName,
         number: newNumber
       }
+    if(checkExists){
+      if(window.confirm(`Person is already added to phonebook, replace phonenumber?`)){
+        personService
+        .update(personIdFromName(newName), newPerson)
+        .then(response => {
+        console.log(response)
+        
+        personService
+            .getAll()
+            .then(response => {
+              setPersons(response.data)
+              setFilteredPersons(response.data)
+        })
+        setNewName('')
+        setNewNumber('')
+        setNewFilter('')
+      })
+
+      }
+    }else{
+
 
     personService
     .create(newPerson)
