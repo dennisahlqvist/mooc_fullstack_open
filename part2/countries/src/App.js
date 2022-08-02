@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 
-const Countries = ({countries}) => {
+const Countries = ({countries,handleCountryClick}) => {
   if(countries.length >= 10){
     return (
       "Too many matches"
@@ -11,7 +11,7 @@ const Countries = ({countries}) => {
     return (
       <div>
           {countries.map((country,index1) => 
-          <p key={index1}>{country.name}</p>
+          <p key={index1}>{country.name}<button onClick={() => handleCountryClick(country.name)}>show</button></p>
       )}
     </div>
     )
@@ -69,7 +69,11 @@ const App = () => {
   console.log('render', countries.length, 'countries')
   console.log(countries)
 
-
+  const handleCountryClick = countryName => {
+    setNewFilter(countryName)
+    const filtered = countries.filter((country) => country.name.toLowerCase().includes(countryName.toLowerCase()))
+    setFilteredCountries(filtered)
+  }
 
   
   const handleFilterChange = (event) => {
@@ -85,7 +89,7 @@ const App = () => {
 
   
       
-      <Countries countries={filteredCountries} />
+      <Countries countries={filteredCountries} handleCountryClick={handleCountryClick} />
 
     </div>
   )
