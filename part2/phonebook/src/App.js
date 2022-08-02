@@ -25,6 +25,18 @@ const Button = (props) => {
   )
 }
 
+const ErrorNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
 const SuccessNotification = ({ message }) => {
   if (message === null) {
     return null
@@ -46,6 +58,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
@@ -93,6 +106,14 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setNewFilter('')
+      }).catch(error => {
+        setErrorMessage(
+          `Information of '${newName}' has already been removed from the server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        setNotes(notes.filter(n => n.id !== id))
       })
 
       }
@@ -156,6 +177,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <ErrorNotification message={errorMessage} />
         <SuccessNotification message={successMessage} />
         <div>filter shown with: <input value={newFilter} onChange={handleFilterChange}/></div>
         <h2>add a new</h2>
