@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
 
-const Countries = ({countries,handleCountryClick}) => {
+
+const Countries = ({countries,handleCountryClick, weather}) => {
   if(countries.length >= 10){
     return (
       "Too many matches"
@@ -19,7 +21,7 @@ const Countries = ({countries,handleCountryClick}) => {
     return (
       <div>
           {countries.map((country,index1) => 
-        <CountryDetails key={index1} country={country}/>
+        <CountryDetails key={index1} country={country} weather={weather}/>
       )}
     </div>
     )
@@ -30,7 +32,7 @@ const Countries = ({countries,handleCountryClick}) => {
   }
 }
 
-const CountryDetails = ({country}) => {
+const CountryDetails = ({country,weather}) => {
   return (
     <div>
       <h2> {country.name}</h2>
@@ -43,9 +45,23 @@ const CountryDetails = ({country}) => {
         <p key={language.name}>{language.name}</p>
   )}
   <img src={country.flags.svg} alt={`Flag for $country.name`} width="200em" />
+      <Weather  weather={weather}/>
     </div>
   )
 }
+
+const Weather = ({weather}) => {
+  console.log(weather)
+  return (
+    <div>
+      <h2>Weather in {weather?.name}</h2>
+      <p>Weather {weather?.weather[0]?.description} {weather?.main.temp}&#176; Celcius</p>
+      <p>wind deg {weather?.wind.deg}</p>
+      <img src={`http://openweathermap.org/img/wn/${weather?.weather[0]?.icon}@2x.png`} width="200em" />
+    </div>
+  )
+}
+
 
 const App = () => {
   
@@ -54,6 +70,8 @@ const App = () => {
   const [filteredCountries, setFilteredCountries] = useState(countries)
 
   const [newFilter, setNewFilter] = useState('')
+
+  const [weather, setWeather] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -66,9 +84,21 @@ const App = () => {
       })
   }, [])
 
-  console.log('render', countries.length, 'countries')
-  console.log(countries)
+  
 
+
+  useEffect(() => {
+    console.log('effect2')
+    if(filteredCountries.length==1){
+      let lat = filteredCountries[0].latlng[0]
+      let lon = filteredCountries[0].latlng[1]
+      axios
+        .get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`)
+        .then(response => {
+          setWeather(response.data)
+      })
+    }
+  }, [filteredCountries])
   const handleCountryClick = countryName => {
     setNewFilter(countryName)
     const filtered = countries.filter((country) => country.name.toLowerCase().includes(countryName.toLowerCase()))
@@ -89,7 +119,7 @@ const App = () => {
 
   
       
-      <Countries countries={filteredCountries} handleCountryClick={handleCountryClick} />
+      <Countries countries={filteredCountries} handleCountryClick={handleCountryClick} weather={weather} />
 
     </div>
   )
