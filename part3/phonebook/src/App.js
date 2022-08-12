@@ -102,14 +102,16 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setNewFilter('')
-      }).catch(error => {
+      })
+      .catch(error => {
+        console.log(error.response)
         setErrorMessage(
-          `Information of '${newName}' has already been removed from the server`
+          error.response.data.error//`Information of '${newName}' has already been removed from the server`
         )
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
+        }, 10000)
+        //setNotes(notes.filter(n => n.id !== id))
       })
 
       }
@@ -130,6 +132,15 @@ const App = () => {
       setTimeout(() => {
         setSuccessMessage(null)
       }, 5000)
+      })
+      .catch(error => {
+        console.log(error.response)
+        setErrorMessage(
+          error.response.data.error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
       })
     }
   }
