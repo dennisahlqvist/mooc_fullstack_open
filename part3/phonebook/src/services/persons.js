@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/persons'
+const baseUrl = '/api/persons'
 //const baseUrl = 'https://3001-dennisahlqv-moocfullsta-7ey3kofjqtq.ws-eu54.gitpod.io/api/persons'
 
 const getAll = () => {
