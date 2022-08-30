@@ -42,6 +42,12 @@ describe('/api/blogs', () => {
     expect(response.body).toHaveLength(initialBlogs.length)
   })
 })
+
+test('verify that the unique identifier is named id', async () => {
+  let blog = await Blog.findOne({})
+  expect(blog._id).toBeDefined()
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
