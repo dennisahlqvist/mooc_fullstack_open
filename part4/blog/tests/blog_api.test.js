@@ -77,6 +77,17 @@ test('if the likes is missing, default to 0', async () => {
   expect(lastBlog.likes).toBe(0)
 })
 
+test('title and url properties are required', async () => {
+  jest.setTimeout(10000)
+  const aBlog =  {
+    author: 'Edsger W. Dijkstra',
+    likes: 10
+  }
+  const response = await api.post('/api/blogs').send(aBlog)
+  expect(response).toBeDefined()
+  expect(response.status).toBe(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
