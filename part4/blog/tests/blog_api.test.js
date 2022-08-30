@@ -63,6 +63,20 @@ test('create a new blog post', async () => {
   expect(response2.body).toHaveLength(initialBlogs.length+1)
 })
 
+test('if the likes is missing, default to 0', async () => {
+  const aBlog =  {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
+  }
+  const response = await api.post('/api/blogs').send(aBlog)
+  expect(response.body).toBeDefined()
+
+  const response2 = await api.get('/api/blogs')
+  let lastBlog = response2.body[response2.body.length-1]
+  expect(lastBlog.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
