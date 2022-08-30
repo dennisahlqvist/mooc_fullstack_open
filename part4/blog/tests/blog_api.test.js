@@ -48,6 +48,21 @@ test('verify that the unique identifier is named id', async () => {
   expect(blog._id).toBeDefined()
 })
 
+
+test('create a new blog post', async () => {
+  const aBlog = {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    likes: 10
+  }
+  const response = await api.post('/api/blogs').send(aBlog)
+  expect(response.body).toBeDefined()
+
+  const response2 = await api.get('/api/blogs')
+  expect(response2.body).toHaveLength(initialBlogs.length+1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
