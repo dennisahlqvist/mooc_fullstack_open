@@ -29,7 +29,8 @@ beforeEach(async () => {
   blogObject = new Blog(initialBlogs[1])
   await blogObject.save()
 })
-describe('/api/blogs', () => {
+
+describe('GET /api/blogs', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -49,43 +50,48 @@ test('verify that the unique identifier is named id', async () => {
 })
 
 
-test('create a new blog post', async () => {
-  const aBlog = {
-    title: 'First class tests',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-    likes: 10
-  }
-  const response = await api.post('/api/blogs').send(aBlog)
-  expect(response.body).toBeDefined()
+describe('POST /api/blogs', () => {
 
-  const response2 = await api.get('/api/blogs')
-  expect(response2.body).toHaveLength(initialBlogs.length+1)
+  test('create a new blog post', async () => {
+    const aBlog = {
+      title: 'First class tests',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+      likes: 10
+    }
+    const response = await api.post('/api/blogs').send(aBlog)
+    expect(response.body).toBeDefined()
+
+    const response2 = await api.get('/api/blogs')
+    expect(response2.body).toHaveLength(initialBlogs.length+1)
+  })
+
+  test('if the likes is missing, default to 0', async () => {
+    const aBlog =  {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
+    }
+    const response = await api.post('/api/blogs').send(aBlog)
+    expect(response.body).toBeDefined()
+
+    const response2 = await api.get('/api/blogs')
+    let lastBlog = response2.body[response2.body.length-1]
+    expect(lastBlog.likes).toBe(0)
+  })
+
+  test('title and url properties are required', async () => {
+  //jest.setTimeout(10000)
+    const aBlog =  {
+      author: 'Edsger W. Dijkstra',
+      likes: 10
+    }
+    const response = await api.post('/api/blogs').send(aBlog)
+    expect(response).toBeDefined()
+    expect(response.status).toBe(400)
+  })
+
 })
-
-test('if the likes is missing, default to 0', async () => {
-  const aBlog =  {
-    title: 'Canonical string reduction',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
-  }
-  const response = await api.post('/api/blogs').send(aBlog)
-  expect(response.body).toBeDefined()
-
-  const response2 = await api.get('/api/blogs')
-  let lastBlog = response2.body[response2.body.length-1]
-  expect(lastBlog.likes).toBe(0)
-})
-
-test('title and url properties are required', async () => {
-  jest.setTimeout(10000)
-  const aBlog =  {
-    author: 'Edsger W. Dijkstra',
-    likes: 10
-  }
-  const response = await api.post('/api/blogs').send(aBlog)
-  expect(response).toBeDefined()
-  expect(response.status).toBe(400)
 
 describe('DELETE /api/blogs', () => {
 
