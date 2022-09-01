@@ -125,6 +125,35 @@ describe('DELETE /api/blogs', () => {
 
 })
 
+describe('PUT /api/blogs', () => {
+
+  test('update blog likes', async () => {
+    let startBlogs = await Blog.find({})
+    const aBlog = startBlogs[0]
+    aBlog.likes += 3
+    const response = await api.put(`/api/blogs/${aBlog.id}`).send(aBlog)
+    expect(response).toBeDefined()
+    expect(response.status).toBe(200)
+    let endBlogs = await Blog.find({})
+    expect(endBlogs.length).toBe(startBlogs.length)
+    expect(endBlogs[0].likes).toBe(aBlog.likes)
+  })
+
+  test('update blog title', async () => {
+    let startBlogs = await Blog.find({})
+    const aBlog = startBlogs[0]
+    aBlog.title = 'a Blog'
+    const response = await api.put(`/api/blogs/${aBlog.id}`).send(aBlog)
+    expect(response).toBeDefined()
+    expect(response.status).toBe(200)
+    let endBlogs = await Blog.find({})
+    expect(endBlogs.length).toBe(startBlogs.length)
+    expect(endBlogs[0].likes).toBe(aBlog.likes)
+    expect(endBlogs[0].title).toBe(aBlog.title)
+  })
+
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
