@@ -24,10 +24,11 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+
+  const initialBlogsCopy = initialBlogs
+    .map(ablog => new Blog(ablog))
+  const promiseArray = initialBlogsCopy.map(ablog => ablog.save())
+  await Promise.all(promiseArray)
 })
 
 describe('GET /api/blogs', () => {
