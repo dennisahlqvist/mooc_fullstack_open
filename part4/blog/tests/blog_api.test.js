@@ -86,6 +86,36 @@ test('title and url properties are required', async () => {
   const response = await api.post('/api/blogs').send(aBlog)
   expect(response).toBeDefined()
   expect(response.status).toBe(400)
+
+describe('DELETE /api/blogs', () => {
+
+  test('delete blog', async () => {
+  //jest.setTimeout(10000)
+    let startBlogs = await Blog.find({})
+    let blogToDelete = startBlogs[0]
+    const response = await api.delete(`/api/blogs/${blogToDelete.id}`)
+
+    expect(response).toBeDefined()
+    expect(response.status).toBe(204)
+    let endBlogs = await Blog.find({})
+    expect(endBlogs.length).toBe(startBlogs.length -1)
+  })
+
+
+
+  test('delete non existing', async () => {
+  //jest.setTimeout(10000)
+    let startBlogs = await Blog.find({})
+    let blogToDelete = { id: 21343452435 }
+    const response = await api.delete(`/api/blogs/${blogToDelete.id}`)
+
+    expect(response).toBeDefined()
+    expect(response.status).toBe(400)
+    expect(response.status).not.toBe(204)
+    let endBlogs = await Blog.find({})
+    expect(endBlogs.length).toBe(startBlogs.length)
+  })
+
 })
 
 afterAll(() => {
