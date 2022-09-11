@@ -1,4 +1,12 @@
-
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7)
+  } else {
+    request.token = null
+  }
+  next()
+}
 
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
@@ -14,5 +22,6 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
-  errorHandler,
+  tokenExtractor,
+  errorHandler
 }
