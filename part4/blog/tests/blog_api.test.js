@@ -1,10 +1,13 @@
-const mongoose = require('mongoose')
+
 const supertest = require('supertest')
 const app = require('../app')
 
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const jwt = require('jsonwebtoken')
 
 const initialBlogs = [
   {
@@ -20,6 +23,26 @@ const initialBlogs = [
     likes: 5
   }
 ]
+
+let token = ''
+
+beforeAll(async () => {
+  await User.deleteMany({})
+  const newUser = {
+    username: 'auser',
+    name: 'the user',
+    password: 'password',
+  }
+
+  const response = await api.post('/api/users').send(newUser)
+
+  const userForToken = {
+    username: response.body.username,
+    id: response.body.id,
+  }
+  token = jwt.sign(userForToken, process.env.SECRET)
+
+})
 
 
 beforeEach(async () => {
@@ -60,7 +83,10 @@ describe('POST /api/blogs', () => {
       url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
       likes: 10
     }
-    const response = await api.post('/api/blogs').send(aBlog)
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(aBlog)
     expect(response.body).toBeDefined()
 
     const response2 = await api.get('/api/blogs')
@@ -73,7 +99,10 @@ describe('POST /api/blogs', () => {
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
     }
-    const response = await api.post('/api/blogs').send(aBlog)
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(aBlog)
     expect(response.body).toBeDefined()
 
     const response2 = await api.get('/api/blogs')
@@ -87,9 +116,28 @@ describe('POST /api/blogs', () => {
       author: 'Edsger W. Dijkstra',
       likes: 10
     }
-    const response = await api.post('/api/blogs').send(aBlog)
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(aBlog)
     expect(response).toBeDefined()
     expect(response.status).toBe(400)
+  })
+
+  test('token are required', async () => {
+  //jest.setTimeout(10000)
+    const aBlog = {
+      title: 'First class tests',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+      likes: 10
+    }
+    const response = await api
+      .post('/api/blogs')
+      //.set('Authorization', `bearer ${token}`)
+      .send(aBlog)
+    expect(response).toBeDefined()
+    expect(response.status).toBe(401)
   })
 
 })
@@ -154,6 +202,3 @@ describe('PUT /api/blogs', () => {
 
 })
 
-afterAll(() => {
-  mongoose.connection.close()
-})
